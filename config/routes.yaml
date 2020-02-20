@@ -1,7 +1,7 @@
-blog_list:
-    path:     /blog
-    controller: App\Controller\BlogController::list
+home:
+  path: /
+  controller: App\Controller\BlogController::home
 
-blog_show:
-    path:     /blog/show/{id}
-    controller: App\Controller\BlogController::show
+post:
+  path: /post/{id}
+  controller: App\Controller\BlogController::post

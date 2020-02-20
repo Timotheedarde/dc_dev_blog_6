@@ -1,32 +1,47 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 class BlogController extends AbstractController
 {
-    public function list()
+    public function home()
     {
-        $posts = $this->getDoctrine()
-            ->getRepository(Post::class)
-            ->findAll();
+        $doctrine = $this->getDoctrine();
+        $postsRepository = $doctrine->getRepository(Post::class);
+        $posts = $postsRepository->findAll();
 
-        return $this->render('blog/list.html.twig', ['posts' => $posts]);
+        $categoriesRepository = $doctrine->getRepository(Category::class);
+        $categories = $categoriesRepository->findAll();
+        
+        return $this->render('home.html.twig', [
+            'posts' => $posts,
+            'categories' => $categories
+            ]);
     }
+    
+    public function post($id) {
+        $doctrine = $this->getDoctrine();
+        $postsRepository = $doctrine->getRepository(Post::class);
+        $post = $postsRepository->find($id);
 
-    public function show($id)
-    {
-        $post = $this->getDoctrine()
-            ->getRepository(Post::class)
-            ->find($id);
+        $categoriesRepository = $doctrine->getRepository(Category::class);
+        $categories = $categoriesRepository->findAll();
+
+
 
         if (!$post) {
-            // cause the 404 page not found to be displayed
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException('Pas d\'article trouvé pour l\'id '.$id);            
         }
 
-        return $this->render('blog/show.html.twig', ['post' => $post]);
+        return $this->render('post.html.twig', [
+            'post' => $post,
+            'categories' => $categories
+            ]);
     }
+
 }
-?>
